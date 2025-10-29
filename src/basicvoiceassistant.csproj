@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BasicVoiceAssistant</AssemblyName>
+    <RootNamespace>Azure.AI.VoiceLive.Samples</RootNamespace>
+    <IsSamplesProject>true</IsSamplesProject>
+    <SupportsNetStandard20>false</SupportsNetStandard20>
+    <UserSecretsId>de55b67e-2dff-4d9e-9cf1-097b6ee889ff</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.17.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.Threading.Channels" Version="9.0.8" />
+    <PackageReference Include="Azure.AI.VoiceLive" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Prompts\instructions-santa.txt" />
+    <EmbeddedResource Include="Prompts\instructions-zara.txt" />
+    <EmbeddedResource Include="Prompts\instructions-basic.txt" />
+    <EmbeddedResource Include="Prompts\instructions.txt" />
+  </ItemGroup>
+
+  <Target Name="OverwriteWithDevelopmentSettings" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Copy SourceFiles="appsettings.development.json" DestinationFiles="$(OutputPath)appsettings.json" OverwriteReadOnlyFiles="true" Condition="Exists('appsettings.development.json')" />
+  </Target>
+
+</Project>
