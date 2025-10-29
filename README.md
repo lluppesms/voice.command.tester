@@ -48,7 +48,7 @@ These methods eliminate the need to manually construct and populate `ClientEvent
 
 2. **Configure credentials in appsettings.json or User Secrets**:
 
-   You will need to have an Azure VoiceLive API key. You can set it up in `appsettings.json` like this:
+   You will need to deploy the Voice Live service in AI Foundry and one of the models such as gpt-realtime that support audio.  You must have an Azure VoiceLive API key and an endpoint set it up in `appsettings.json` (or user secrets) like this:
 
    ```json
    {
