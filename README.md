@@ -2,34 +2,7 @@
 
 This sample program is derived from the Azure VoiceLive SDK documentation and the sample program [https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.VoiceLive/samples/BasicVoiceAssistant](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/ai/Azure.AI.VoiceLive/samples/BasicVoiceAssistant).
 
-This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by creating a very basic voice assistant that can engage in natural conversation in real-time using bidirectional audio streaming. It captures audio from the user's microphone, sends it to the VoiceLive service for processing, and plays back the assistant's spoken responses through the speakers. The LLM can be configured to use prompts from the prompts folder which can easily be modified by the developer.
-
-## New VoiceLive SDK Convenience Methods
-
-This sample now demonstrates some of the new convenience methods added to the VoiceLive SDK for better developer experience:
-
-**Used in this sample:**
-- `ClearStreamingAudioAsync()` - Clears all input audio currently being streamed
-- `ConfigureSessionAsync()` - Configures conversation session options
-- `CancelResponseAsync()` - Cancels the current response generation
-- `SendInputAudioAsync()` - Sends audio data to the service
-
-**Additional convenience methods available:**
-- `StartAudioTurnAsync()` / `EndAudioTurnAsync()` / `CancelAudioTurnAsync()` - Audio turn management
-- `AppendAudioToTurnAsync()` - Append audio data to an ongoing turn  
-- `ConnectAvatarAsync()` - Connect avatar with SDP for media negotiation
-- `CommitInputAudioAsync()` / `ClearInputAudioAsync()` - Audio buffer operations
-
-These methods eliminate the need to manually construct and populate `ClientEvent` classes, providing a more developer-friendly API similar to the OpenAI SDK.
-
-## Features
-
-- **Real-time voice conversation**: Seamless bidirectional audio streaming
-- **Interruption handling**: Graceful handling of user interruptions during assistant responses
-- **Multiple voice options**: Support for both OpenAI and Azure voices
-- **Cross-platform audio**: Uses NAudio for reliable audio capture and playback
-- **Robust error handling**: Automatic reconnection and error recovery
-- **Configurable settings**: Command line options and configuration file support
+This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by creating a very basic voice assistant that can engage in natural conversation in real-time using bidirectional audio streaming. It captures audio from the user's microphone, sends it to the VoiceLive service for processing, and plays back the assistant's spoken responses through the speakers. The program can be configured to supply one of many prompts from the prompts folder by simply modifying the `appsettings.json` file.
 
 ## Prerequisites
 
@@ -70,11 +43,34 @@ These methods eliminate the need to manually construct and populate `ClientEvent
 dotnet run
 ```
 
-### Command Line Options
+---
 
-```bash
-dotnet run --help
-```
+## New VoiceLive SDK Convenience Methods
+
+This sample now demonstrates some of the new convenience methods added to the VoiceLive SDK for better developer experience:
+
+**Used in this sample:**
+- `ClearStreamingAudioAsync()` - Clears all input audio currently being streamed
+- `ConfigureSessionAsync()` - Configures conversation session options
+- `CancelResponseAsync()` - Cancels the current response generation
+- `SendInputAudioAsync()` - Sends audio data to the service
+
+**Additional convenience methods available:**
+- `StartAudioTurnAsync()` / `EndAudioTurnAsync()` / `CancelAudioTurnAsync()` - Audio turn management
+- `AppendAudioToTurnAsync()` - Append audio data to an ongoing turn  
+- `ConnectAvatarAsync()` - Connect avatar with SDP for media negotiation
+- `CommitInputAudioAsync()` / `ClearInputAudioAsync()` - Audio buffer operations
+
+These methods eliminate the need to manually construct and populate `ClientEvent` classes, providing a more developer-friendly API similar to the OpenAI SDK.
+
+## Features
+
+- **Real-time voice conversation**: Seamless bidirectional audio streaming
+- **Interruption handling**: Graceful handling of user interruptions during assistant responses
+- **Multiple voice options**: Support for both OpenAI and Azure voices
+- **Cross-platform audio**: Uses NAudio for reliable audio capture and playback
+- **Robust error handling**: Automatic reconnection and error recovery
+- **Configurable settings**: Command line options and configuration file support
 
 ## How It Works
 
