@@ -16,6 +16,7 @@ This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by
 1. **Install dependencies**:
 
    ```bash
+   cd src
    dotnet restore
    ```
 
@@ -40,6 +41,7 @@ This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by
 ### Basic Usage
 
 ```bash
+cd src
 dotnet run
 ```
 
