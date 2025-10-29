@@ -3,7 +3,7 @@ namespace Azure.AI.VoiceLive.Samples;
 public class Utilities
 {
     #region Configuration
-    public static (string? apiKey, string? endpoint, string? model, string? voice, string? tenantId, bool useTokenCredential, bool verbose) ReadConfig()
+    public static (string apiKey, string endpoint, string model, string voice, string? tenantId, bool useTokenCredential, bool verbose) ReadConfig()
     {
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true)
@@ -11,10 +11,10 @@ public class Utilities
             .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
             .Build();
 
-        string? apiKey = configuration["VoiceLive:ApiKey"];
-        string? endpoint = configuration["VoiceLive:xEndpoint"];
-        string? model = configuration["VoiceLive:Model"];
-        string? voice = configuration["VoiceLive:Voice"];
+        string apiKey = configuration["VoiceLive:ApiKey"];
+        string endpoint = configuration["VoiceLive:Endpoint"];
+        string model = configuration["VoiceLive:Model"];
+        string voice = configuration["VoiceLive:Voice"];
         string? tenantId = configuration["VisualStudioTenantId"];
 
         var useTokenCredential = string.IsNullOrEmpty(apiKey);
@@ -22,8 +22,7 @@ public class Utilities
 
         if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(model) || string.IsNullOrEmpty(voice))
         {
-            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + "  [red]Configuration error: required settings missing![/]");
-            AnsiConsole.MarkupLine("[red]Application will terminate immediately.[/]");
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + "  [red]Configuration error: required settings missing!  Application will terminate immediately.[/]");
             AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
             Console.ReadKey();
             Environment.Exit(1);
