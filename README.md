@@ -27,11 +27,10 @@ This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by
    ```json
    {
       "VoiceLive": {
-         "ApiKey": "your-api-key",
-         "Endpoint": "wss://<YOUR-AI-FOUNDRY-SERVICES-ENDPOINT-NAME>.services.ai.azure.com/voice-live/realtime?api-version=2025-10-01",
-         "Model": "gpt-realtime",
-         "Voice": "en-US-AvaNeural",
-         "InstructionsFileName": "instructions.txt"
+        "Endpoint": "wss://domain-<YOUR-AI-FOUNDRY-AI-INFERENCE-ENDPOINT-NAME>.services.ai.azure.com/voice-live/realtime?api-version=2025-10-01",
+        "ApiKey": "your-api-key",
+        "Model": "gpt-realtime",
+        "Voice": "en-US-AvaNeural"
       }
    }
    ```
