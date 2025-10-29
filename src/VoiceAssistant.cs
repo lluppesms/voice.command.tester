@@ -221,6 +221,19 @@ public class VoiceAssistant : IDisposable
                 }
                 break;
 
+            // this seems right, but doesn't stop and catch anything...
+            // in python it's working using this:   case "conversation.item.input_audio_transcription.completed":
+            //case SessionUpdateConversationItemInputAudioTranscriptionCompleted speechCompleted:
+            //    var userInput= speechCompleted.Transcript;
+            //    AnsiConsole.MarkupLine(Emoji.Known.Person + $"  [yellow]{userInput}[/]");
+            //    break;
+
+            case SessionUpdateResponseAudioTranscriptDone speechDone:
+                var transcript = speechDone.Transcript;
+                _logger.LogInformation($"🎤 AI: {transcript}");
+                AnsiConsole.MarkupLine(Emoji.Known.Alien + $"  [green]{transcript}[/]");
+                break;
+
             case SessionUpdateInputAudioBufferSpeechStopped speechStopped:
                 _logger.LogInformation("🎤 User stopped speaking");
                 AnsiConsole.MarkupLine(Emoji.Known.ThinkingFace + $"  [cyan]Processing...[/]");
