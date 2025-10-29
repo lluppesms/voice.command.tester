@@ -34,7 +34,7 @@ public class VoiceAssistant : IDisposable
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the BasicVoiceAssistant class.
+    /// Initializes a new instance of the VoiceAssistant class.
     /// </summary>
     /// <param name="client">The VoiceLive client.</param>
     /// <param name="model">The model to use.</param>
@@ -75,13 +75,11 @@ public class VoiceAssistant : IDisposable
             await _audioProcessor.StartCaptureAsync().ConfigureAwait(false);
 
             _logger.LogInformation("Voice assistant ready! Start speaking...");
-            Console.WriteLine();
-            Console.WriteLine("=" + new string('=', 59));
-            Console.WriteLine("🎤 VOICE ASSISTANT READY");
-            Console.WriteLine("Start speaking to begin conversation");
-            Console.WriteLine("Press Ctrl+C to exit");
-            Console.WriteLine("=" + new string('=', 59));
-            Console.WriteLine();
+
+            AnsiConsole.MarkupLine($"[cyan]{new string('=', 60)}[/]");
+            AnsiConsole.MarkupLine(Emoji.Known.Microphone + "  [cyan]VOICE ASSISTANT READY[/]");
+            AnsiConsole.MarkupLine("[cyan]Start speaking to begin conversation...  Press Ctrl+C to exit...[/]");
+            AnsiConsole.MarkupLine($"[cyan]{new string('=', 60)}[/]");
 
             // Process events
             await ProcessEventsAsync(cancellationToken).ConfigureAwait(false);
@@ -193,7 +191,7 @@ public class VoiceAssistant : IDisposable
 
             case SessionUpdateInputAudioBufferSpeechStarted speechStarted:
                 _logger.LogInformation("🎤 User started speaking - stopping playback");
-                Console.WriteLine("🎤 Listening...");
+                AnsiConsole.MarkupLine(Emoji.Known.Microphone + $"  [cyan]Listening...[/]");
 
                 // Stop current assistant audio playback (interruption handling)
                 if (_audioProcessor != null)
@@ -225,7 +223,7 @@ public class VoiceAssistant : IDisposable
 
             case SessionUpdateInputAudioBufferSpeechStopped speechStopped:
                 _logger.LogInformation("🎤 User stopped speaking");
-                Console.WriteLine("🤔 Processing...");
+                AnsiConsole.MarkupLine(Emoji.Known.ThinkingFace + $"  [cyan]Processing...[/]");
 
                 // Restart playback system for response
                 if (_audioProcessor != null)
@@ -251,7 +249,8 @@ public class VoiceAssistant : IDisposable
 
             case SessionUpdateResponseAudioDone audioDone:
                 _logger.LogInformation("🤖 Assistant finished speaking");
-                Console.WriteLine("🎤 Ready for next input...");
+                AnsiConsole.MarkupLine(Emoji.Known.Microphone + $"  [cyan]Ready for next input...[/]");
+                //Console.WriteLine("🎤 Ready for next input...");
                 break;
 
             case SessionUpdateResponseDone responseDone:
@@ -260,7 +259,7 @@ public class VoiceAssistant : IDisposable
 
             case SessionUpdateError errorEvent:
                 _logger.LogError("❌ VoiceLive error: {ErrorMessage}", errorEvent.Error?.Message);
-                Console.WriteLine($"Error: {errorEvent.Error?.Message}");
+                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  red]Error:[/] {errorEvent.Error?.Message}");
                 break;
 
             default:

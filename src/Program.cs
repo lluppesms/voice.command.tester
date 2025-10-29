@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 ///// <summary>
 ///// FILE: Program.cs
 ///// </summary>
@@ -10,12 +7,9 @@
 /////     a basic voice assistant that can engage in natural conversation with proper interruption
 /////     handling. This serves as the foundational example that showcases the core value
 /////     proposition of unified speech-to-speech interaction.
-/////
 ///// USAGE:
-/////     dotnet run
-/////
 /////     update appsettings.json with your values.
-/////
+/////     dotnet run
 ///// REQUIREMENTS:
 /////     - Azure.AI.VoiceLive
 /////     - Azure.Identity
@@ -28,18 +22,15 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        Console.WriteLine("Voice Service initializing...");
-        if (args.Length > 0 && args[0] == "--help")
-        {
-            Console.WriteLine("Usage: dotnet run");
-            Console.WriteLine("This application starts a voice assistant using the VoiceLive SDK.");
-            return;
-        }
-        var instructionsFile = string.Empty;
-        if (args.Length > 0)
-        {
-            instructionsFile = args[0];
-        }
+        Utilities.WelcomeMessage("Live Voice Command Center", "Welcome to the LiveVoice API Demo");
+
+        (var agentName, var instructionsFile) = PromptManager.SelectAnAgent();
+
+        AnsiConsole.MarkupLine("\n" + Emoji.Known.Construction + $"  [cyan]Initializing Voice Service Connection to Agent {agentName}...[/]");
         await VoiceAssistantSetup.StartVoiceAssistant(instructionsFile);
+
+        AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
+        Console.ReadKey();
+
     }
 }

@@ -2,7 +2,7 @@ namespace Azure.AI.VoiceLive.Samples;
 
 public static class VoiceAssistantSetup
 {
-    public static async Task StartVoiceAssistant(string instructionsFileParm)
+    public static async Task StartVoiceAssistant(string instructionsFileName)
     {
         ILoggerFactory loggerFactory;
         ILogger<Program> logger = null;
@@ -11,12 +11,8 @@ public static class VoiceAssistantSetup
         try
         {
             (loggerFactory, logger) = Utilities.InitializeLogging();
-            (var apiKey, var endpoint, var model, var voice, var instructionsFileName, var tenantId, var useTokenCredential, var verbose) = Utilities.ReadConfig();
+            (var apiKey, var endpoint, var model, var voice, var tenantId, var useTokenCredential, var verbose) = Utilities.ReadConfig();
 
-            // Read instructions file name from config, override if passed in on command line, default if neither is found
-            if (string.IsNullOrEmpty(instructionsFileName)) instructionsFileName = "instructions.txt";
-            if (!string.IsNullOrEmpty(instructionsFileParm)) instructionsFileName = instructionsFileParm;
-            logger.LogInformation($"Loading instructions from {instructionsFileName}...");
             instructions = Utilities.ReadResourceFile(instructionsFileName, logger);
 
             // Create client with appropriate credentials
@@ -51,13 +47,14 @@ public static class VoiceAssistantSetup
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("\n👋 Voice assistant shut down. Goodbye!");
+            AnsiConsole.MarkupLine("\n" + Emoji.Known.WavingHand + $"  [cyan]Voice assistant shutting down... Goodbye![/]");
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Fatal error");
-            Console.WriteLine($"❌ Error: {ex.Message}");
-            Console.Write("Press any key to exit...");
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  red]Error![/]");
+            AnsiConsole.WriteException(ex);
+            AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
             Console.ReadKey();
         }
     }

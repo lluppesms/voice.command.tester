@@ -7,3 +7,5 @@ global using Microsoft.Extensions.Logging;
 global using NAudio.Wave;
 global using Microsoft.Extensions.Configuration;
 global using System.Reflection;
+global using Spectre.Console;
+global using System.Text;

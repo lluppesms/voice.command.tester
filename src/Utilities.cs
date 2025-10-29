@@ -3,7 +3,7 @@ namespace Azure.AI.VoiceLive.Samples;
 public class Utilities
 {
     #region Configuration
-    public static (string apiKey, string endpoint, string model, string voice, string instructionsFileName, string? tenantId, bool useTokenCredential, bool verbose) ReadConfig()
+    public static (string? apiKey, string? endpoint, string? model, string? voice, string? tenantId, bool useTokenCredential, bool verbose) ReadConfig()
     {
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true)
@@ -11,23 +11,26 @@ public class Utilities
             .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
             .Build();
 
-        string apiKey = configuration["VoiceLive:ApiKey"];
-        string endpoint = configuration["VoiceLive:Endpoint"];
-        string model = configuration["VoiceLive:Model"];
-        string voice = configuration["VoiceLive:Voice"];
-        string instructionsFileName = configuration["VoiceLive:InstructionsFileName"];
+        string? apiKey = configuration["VoiceLive:ApiKey"];
+        string? endpoint = configuration["VoiceLive:xEndpoint"];
+        string? model = configuration["VoiceLive:Model"];
+        string? voice = configuration["VoiceLive:Voice"];
         string? tenantId = configuration["VisualStudioTenantId"];
 
         var useTokenCredential = string.IsNullOrEmpty(apiKey);
         var verbose = true;
 
-        if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(model))
+        if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(model) || string.IsNullOrEmpty(voice))
         {
-            Console.WriteLine("❌ Error: No endpoint or model provided!");
-            return (string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, false, false);
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + "  [red]Configuration error: required settings missing![/]");
+            AnsiConsole.MarkupLine("[red]Application will terminate immediately.[/]");
+            AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
+            Console.ReadKey();
+            Environment.Exit(1);
+            return (string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, false, false);
         }
 
-        return (apiKey, endpoint, model, voice, instructionsFileName, tenantId, useTokenCredential, verbose);
+        return (apiKey, endpoint, model, voice, tenantId, useTokenCredential, verbose);
     }
     public static string ReadResourceFile(string fileName, ILogger<Program> logger)
     {
@@ -64,10 +67,16 @@ public class Utilities
         return fileContents;
     }
 
+    public static void WelcomeMessage(string appTitle, string welcomeMessage)
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+        AnsiConsole.Write(new FigletText(appTitle).LeftJustified().Color(Color.Red));
+        AnsiConsole.MarkupLine("\n" + Emoji.Known.Construction + $"  [yellow]{welcomeMessage}[/]");
+    }
     #endregion
 
     #region Logging
-    public static (ILoggerFactory, ILogger<Program>)  InitializeLogging()
+    public static (ILoggerFactory, ILogger<Program>) InitializeLogging()
     {
         // Setup logging
         var _loggerFactory = LoggerFactory.Create(builder =>
@@ -167,7 +176,8 @@ public class Utilities
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Audio system check failed: {ex.Message}");
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Audio system check failed:[/]");
+            AnsiConsole.WriteException(ex);
             return false;
         }
     }
