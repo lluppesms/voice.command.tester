@@ -22,7 +22,7 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        Utilities.WelcomeMessage("Live Voice Command Center", "Welcome to the LiveVoice API Demo");
+        Utilities.WelcomeMessage("Voice Live Command Center", "Welcome to the LiveVoice API Demo");
 
         (var agentName, var instructionsFile) = PromptManager.SelectAnAgent();
 

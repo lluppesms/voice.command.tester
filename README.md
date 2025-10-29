@@ -13,14 +13,7 @@ This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by
 
 ## Setup
 
-1. **Install dependencies**:
-
-   ```bash
-   cd src
-   dotnet restore
-   ```
-
-2. **Configure credentials in appsettings.json or User Secrets**:
+1. **Configure credentials in appsettings.json or User Secrets**:
 
    You will need to deploy the Voice Live service in AI Foundry and one of the models such as gpt-realtime that support audio.  You must have an Azure VoiceLive API key and an endpoint set it up in `appsettings.json` (or user secrets) like this:
 
@@ -35,12 +28,11 @@ This app demonstrates the fundamental capabilities of the Azure VoiceLive SDK by
    }
    ```
 
-## Usage
-
-### Basic Usage
+## Basic Usage
 
 ```bash
 cd src
+dotnet restore
 dotnet run
 ```
 
