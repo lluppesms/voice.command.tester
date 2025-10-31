@@ -1,4 +1,6 @@
-﻿namespace Azure.AI.VoiceLive.Samples;
+﻿using Azure.AI.VoiceLive.Samples.Helpers;
+
+namespace Azure.AI.VoiceLive.Samples.Prompts;
 
 public static class PromptManager
 {
@@ -24,7 +26,7 @@ public static class PromptManager
                 .PageSize(10)
                 .MoreChoicesText("[grey](Move up and down to select an agent)[/]")
                 .AddChoices(promptNames));
-        return (selectedScenarioName); // , instructionsFile);
+        return selectedScenarioName; // , instructionsFile);
     }
 
     public static string GetPromptFileName(string scenarioName)
