@@ -24,10 +24,10 @@ public class Program
     {
         Utilities.WelcomeMessage("Voice Live Command Center", "Welcome to the LiveVoice API Demo");
 
-        (var agentName, var instructionsFile) = PromptManager.SelectAnAgent();
+        var scenarioName = PromptManager.SelectAScenario();
 
-        AnsiConsole.MarkupLine("\n" + Emoji.Known.Construction + $"  [cyan]Initializing Voice Service Connection to Agent {agentName}...[/]");
-        await VoiceAssistantSetup.StartVoiceAssistant(instructionsFile);
+        AnsiConsole.MarkupLine("\n" + Emoji.Known.Construction + $"  [cyan]Initializing Voice Service Connection to Agent {scenarioName}...[/]");
+        await VoiceAssistantSetup.StartVoiceAssistant(scenarioName);
 
         AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
         Console.ReadKey();

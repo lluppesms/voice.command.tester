@@ -1,19 +1,60 @@
+using Azure.Core;
+using Microsoft.Extensions.Logging;
+using System.Web;
+
 namespace Azure.AI.VoiceLive.Samples;
 
 public static class VoiceAssistantSetup
 {
-    public static async Task StartVoiceAssistant(string instructionsFileName)
+    public static async Task StartVoiceAssistant(string scenarioName)
     {
         ILoggerFactory loggerFactory;
         ILogger<Program> logger = null;
-        string? instructions;
+        string instructions = string.Empty;
+        string agentAccessToken;
 
         try
         {
             (loggerFactory, logger) = Utilities.InitializeLogging();
             (var apiKey, var endpoint, var model, var voice, var tenantId, var useTokenCredential, var verbose) = Utilities.ReadConfig();
 
-            instructions = Utilities.ReadResourceFile(instructionsFileName, logger);
+            var scenario = PromptManager.GetScenario(scenarioName);
+
+            if (!string.IsNullOrEmpty(scenario.PromptFileName))
+            {
+                instructions = Utilities.ReadResourceFile(scenario.PromptFileName);
+            }
+
+            //if (!string.IsNullOrEmpty(scenario.AgentName))
+            //{
+            //    try
+            //    {
+            //        logger.LogInformation("Generating agent access token using DefaultAzureCredential...");
+            //        var credential = Utilities.GetCredentials();
+            //        var tokenRequestContext = new TokenRequestContext(["https://ai.azure.com/.default"]);
+            //        var accessToken = await credential.GetTokenAsync(tokenRequestContext, default).ConfigureAwait(false);
+            //        agentAccessToken = accessToken.Token;
+            //        logger.LogInformation("Obtained agent access token successfully");
+
+
+            //        // Append agent parameters to the endpoint URL
+            //        var uriBuilder = new UriBuilder(endpoint);
+            //        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            //        query["agent-id"] = scenario.AgentName;
+            //        query["agent-project-name"] = scenario.ProjectName;
+            //        query["agent-access-token"] = agentAccessToken;
+            //        uriBuilder.Query = query.ToString();
+            //        endpoint = uriBuilder.ToString();
+            //        logger.LogInformation("Agent parameters added as query parameters: agent-id={AgentId}, agent-project-name={ProjectName}", scenario.AgentName, scenario.ProjectName);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Error generating agent access token![/]");
+            //        AnsiConsole.MarkupLine("[red]Please ensure you are authenticated with Azure CLI or have appropriate Azure credentials configured.[/]");
+            //        AnsiConsole.WriteException(ex);
+            //        return;
+            //    }
+            //}
 
             // Create client with appropriate credentials
             VoiceLiveClient client;
@@ -29,6 +70,8 @@ public static class VoiceAssistantSetup
                 client = new VoiceLiveClient(new Uri(endpoint), keyCredential, new VoiceLiveClientOptions());
                 logger.LogInformation("Using API key credential");
             }
+
+
 
             // Create voice assistant
             using var assistant = new VoiceAssistant(client, model, voice, instructions, loggerFactory);

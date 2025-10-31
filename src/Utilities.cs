@@ -31,7 +31,7 @@ public class Utilities
 
         return (apiKey, endpoint, model, voice, tenantId, useTokenCredential, verbose);
     }
-    public static string ReadResourceFile(string fileName, ILogger<Program> logger)
+    public static string ReadResourceFile(string fileName)
     {
         var fileContents = string.Empty;
         try
@@ -46,21 +46,22 @@ public class Utilities
                 {
                     using var reader = new StreamReader(stream);
                     fileContents = reader.ReadToEnd();
-                    logger.LogInformation($"Loaded {fileContents.Length} bytes from embedded resource {fileName}");
+                    Console.WriteLine($"Loaded {fileContents.Length} bytes from embedded resource {fileName}");
                 }
                 else
                 {
-                    logger.LogWarning($"Resource file {fileName} not found!");
+                    AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource file {fileName} not found![/]");
                 }
             }
             else
             {
-                logger.LogWarning($"Resource {fileName} not found!");
+                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource {fileName} not found![/]");
             }
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, $"Failed to load contents from resource {fileName}");
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Failed to load contents from resource:[/]");
+            AnsiConsole.WriteException(ex);
             fileContents = string.Empty;
         }
         return fileContents;
