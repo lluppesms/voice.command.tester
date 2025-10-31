@@ -5,7 +5,7 @@
 		"ModelName": "gpt-realtime"
 	},
 	{
-		"Name": "VeryZara - a friendly chat experience (LLM)",
+		"Name": "Zara - a friendly chat experience (LLM)",
 		"PromptFileName": "instructions-zara.txt",
 		"ModelName": "gpt-realtime"
 	},
@@ -13,10 +13,10 @@
 		"Name": "Santa's Hotline (LLM)",
 		"PromptFileName": "instructions-santa.txt",
 		"ModelName": "gpt-realtime",
-		"VoiceName": "en-US-BreeNeural"
+		"VoiceName": "en-US-AvaNeural"
 	},
 	{
-		"Name": "Truck Service Agent",
+		"Name": "F-250 Truck Service Hotline (Agent)",
 		"AgentName": "asst_GrlTslomjIYjm9mIki9f08XX",
 		"ProjectName": "lll-oai-service-project"
 	}

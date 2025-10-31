@@ -36,12 +36,12 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="Prompts\instructions-santa-verbose.txt" />
-    <EmbeddedResource Include="Prompts\instructions-santa.txt" />
-    <EmbeddedResource Include="Prompts\instructions-zara.txt" />
-    <EmbeddedResource Include="Prompts\instructions-basic.txt" />
-    <EmbeddedResource Include="Prompts\instructions.txt" />
-    <EmbeddedResource Include="Scenarios.json" />
+    <EmbeddedResource Include="Scenarios\prompts\instructions-santa-verbose.txt" />
+    <EmbeddedResource Include="Scenarios\prompts\instructions-santa.txt" />
+    <EmbeddedResource Include="Scenarios\prompts\instructions-zara.txt" />
+    <EmbeddedResource Include="Scenarios\prompts\instructions-basic.txt" />
+    <EmbeddedResource Include="Scenarios\prompts\instructions.txt" />
+    <EmbeddedResource Include="Scenarios\Scenarios.json" />
   </ItemGroup>
 
   <Target Name="OverwriteWithDevelopmentSettings" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">

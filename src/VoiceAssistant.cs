@@ -1,5 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
 
 namespace Azure.AI.VoiceLive.Samples;
 
@@ -23,9 +21,14 @@ namespace Azure.AI.VoiceLive.Samples;
 public class VoiceAssistant : IDisposable
 {
     private readonly VoiceLiveClient _client;
-    private readonly string _model;
-    private readonly string _voice;
-    private readonly string _instructions;
+    private readonly string? _model;
+    private readonly string? _voice;
+    private readonly string? _instructions;
+    private readonly string? _agentName;
+    private readonly string? _agentProject;
+    private readonly string? _agentAccessToken;
+    private readonly ScenarioType _connectionType;
+    private readonly string? _connectionName;
     private readonly ILogger<VoiceAssistant> _logger;
     private readonly ILoggerFactory _loggerFactory;
 
@@ -41,12 +44,25 @@ public class VoiceAssistant : IDisposable
     /// <param name="voice">The voice to use.</param>
     /// <param name="instructions">The system instructions.</param>
     /// <param name="loggerFactory">Logger factory for creating loggers.</param>
-    public VoiceAssistant(VoiceLiveClient client, string model, string voice, string? instructions, ILoggerFactory loggerFactory)
+    public VoiceAssistant(VoiceLiveClient client, string? model, string? instructions, string? agentName, string? agentProject, string? agentAccessToken, string voice, ILoggerFactory loggerFactory)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _model = model ?? throw new ArgumentNullException(nameof(model));
-        _voice = voice ?? throw new ArgumentNullException(nameof(voice));
+        _voice = voice;
+
+        // parameters needed to chat with an LLM
+        _model = model;
         _instructions = instructions;
+        if (!string.IsNullOrEmpty(_model) && string.IsNullOrEmpty(_instructions)) throw new ArgumentNullException(nameof(model));
+
+        // parameters needed to chat with an Agent
+        _agentName = agentName;
+        _agentProject = agentProject;
+        _agentAccessToken = agentAccessToken;
+        if (!string.IsNullOrEmpty(_agentName) && (string.IsNullOrEmpty(_agentProject) || string.IsNullOrEmpty(_agentAccessToken))) throw new ArgumentNullException(nameof(agentName));
+
+        _connectionType = !string.IsNullOrEmpty(_agentName) ? ScenarioType.Agent : ScenarioType.LLM;
+        _connectionName = _connectionType == ScenarioType.Agent ? $"Agent {_agentName}" : $"Model {_model}";
+
         _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
         _logger = loggerFactory.CreateLogger<VoiceAssistant>();
     }
@@ -57,18 +73,15 @@ public class VoiceAssistant : IDisposable
     /// <param name="cancellationToken">Cancellation token for stopping the session.</param>
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
+        VoiceLiveSessionOptions sessionOptions;
         try
         {
-            _logger.LogInformation("Connecting to VoiceLive API with model {Model}", _model);
+            _logger.LogInformation($"Connecting to VoiceLive API with {_connectionName}");
 
-            // Start VoiceLive session
-            _session = await _client.StartSessionAsync(_model, cancellationToken).ConfigureAwait(false);
-
-            // Initialize audio processor
+            sessionOptions = _connectionType == ScenarioType.Agent ? CreateSessionOptions_Agent() : CreateSessionOptions_LLM();
+            _session = await _client.StartSessionAsync(sessionOptions, cancellationToken).ConfigureAwait(false);
             _audioProcessor = new AudioProcessor(_session, _loggerFactory.CreateLogger<AudioProcessor>());
-
-            // Configure session for voice conversation
-            await SetupSessionAsync(cancellationToken).ConfigureAwait(false);
+            await _session!.ConfigureSessionAsync(sessionOptions, cancellationToken).ConfigureAwait(false);
 
             // Start audio systems
             await _audioProcessor.StartPlaybackAsync().ConfigureAwait(false);
@@ -104,11 +117,11 @@ public class VoiceAssistant : IDisposable
     }
 
     /// <summary>
-    /// Configure the VoiceLive session for audio conversation.
+    /// Create session options for LLM-based voice conversation
     /// </summary>
-    private async Task SetupSessionAsync(CancellationToken cancellationToken)
+    private VoiceLiveSessionOptions CreateSessionOptions_LLM()
     {
-        _logger.LogInformation("Setting up voice conversation session...");
+        _logger.LogInformation("Setting up LLM voice conversation session...");
 
         // Azure voice
         var azureVoice = new AzureStandardVoice(_voice);
@@ -138,9 +151,47 @@ public class VoiceAssistant : IDisposable
         sessionOptions.Modalities.Add(InteractionModality.Text);
         sessionOptions.Modalities.Add(InteractionModality.Audio);
 
-        await _session!.ConfigureSessionAsync(sessionOptions, cancellationToken).ConfigureAwait(false);
+        return sessionOptions;
+    }
 
-        _logger.LogInformation("Session configuration sent");
+    /// <summary>
+    /// Create session options for agent-based voice conversation.
+    /// </summary>
+    private VoiceLiveSessionOptions CreateSessionOptions_Agent()
+    {
+        _logger.LogInformation("Creating agent voice conversation session options...");
+
+        // Azure voice
+        var azureVoice = new AzureStandardVoice(_voice);
+
+        // Create strongly typed turn detection configuration
+        var turnDetectionConfig = new ServerVadTurnDetection
+        {
+            Threshold = 0.5f,
+            PrefixPadding = TimeSpan.FromMilliseconds(300),
+            SilenceDuration = TimeSpan.FromMilliseconds(500)
+        };
+
+        // Create conversation session options for agent - no Model or Instructions specified
+        // Agent parameters are passed via URI query parameters during WebSocket connection:
+        // - agent-id: Agent identifier
+        // - agent-project-name: Project containing the agent
+        // - agent-access-token: Generated access token for agent authentication
+        var sessionOptions = new VoiceLiveSessionOptions
+        {
+            InputAudioEchoCancellation = new AudioEchoCancellation(),
+            Voice = azureVoice,
+            InputAudioFormat = InputAudioFormat.Pcm16,
+            OutputAudioFormat = OutputAudioFormat.Pcm16,
+            TurnDetection = turnDetectionConfig
+        };
+
+        // Ensure modalities include audio
+        sessionOptions.Modalities.Clear();
+        sessionOptions.Modalities.Add(InteractionModality.Text);
+        sessionOptions.Modalities.Add(InteractionModality.Audio);
+
+        return sessionOptions;
     }
 
     /// <summary>
@@ -272,7 +323,7 @@ public class VoiceAssistant : IDisposable
 
             case SessionUpdateError errorEvent:
                 _logger.LogError("❌ VoiceLive error: {ErrorMessage}", errorEvent.Error?.Message);
-                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  red]Error:[/] {errorEvent.Error?.Message}");
+                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Error:[/] {errorEvent.Error?.Message}");
                 break;
 
             default:
@@ -307,4 +358,88 @@ public class VoiceAssistant : IDisposable
         _session?.Dispose();
         _disposed = true;
     }
+
+    ///// <summary>
+    ///// Configure the VoiceLive session for audio conversation.
+    ///// </summary>
+    //private async Task SetupLLMSessionAsync(VoiceLiveSessionOptions sessionOptions, CancellationToken cancellationToken)
+    //{
+    //    _logger.LogInformation("Setting up LLM voice conversation session...");
+
+    //    //// Azure voice
+    //    //var azureVoice = new AzureStandardVoice(_voice);
+
+    //    //// Create strongly typed turn detection configuration
+    //    //var turnDetectionConfig = new ServerVadTurnDetection
+    //    //{
+    //    //    Threshold = 0.5f,
+    //    //    PrefixPadding = TimeSpan.FromMilliseconds(300),
+    //    //    SilenceDuration = TimeSpan.FromMilliseconds(500)
+    //    //};
+
+    //    //// Create conversation session options
+    //    //var sessionOptions = new VoiceLiveSessionOptions
+    //    //{
+    //    //    InputAudioEchoCancellation = new AudioEchoCancellation(),
+    //    //    Model = _model,
+    //    //    Instructions = _instructions,
+    //    //    Voice = azureVoice,
+    //    //    InputAudioFormat = InputAudioFormat.Pcm16,
+    //    //    OutputAudioFormat = OutputAudioFormat.Pcm16,
+    //    //    TurnDetection = turnDetectionConfig
+    //    //};
+
+    //    //// Ensure modalities include audio
+    //    //sessionOptions.Modalities.Clear();
+    //    //sessionOptions.Modalities.Add(InteractionModality.Text);
+    //    //sessionOptions.Modalities.Add(InteractionModality.Audio);
+
+    //    await _session!.ConfigureSessionAsync(sessionOptions, cancellationToken).ConfigureAwait(false);
+
+    //    _logger.LogInformation("Session configuration sent");
+    //}
+
+
+    ///// <summary>
+    ///// Create session options for agent-based voice conversation.
+    ///// </summary>
+    //private async Task SetupAgentSessionAsync(VoiceLiveSessionOptions sessionOptions, CancellationToken cancellationToken)
+    //{
+    //    _logger.LogInformation("Creating agent voice conversation session options...");
+
+    //    //// Azure voice
+    //    //var azureVoice = new AzureStandardVoice(_voice);
+
+    //    //// Create strongly typed turn detection configuration
+    //    //var turnDetectionConfig = new ServerVadTurnDetection
+    //    //{
+    //    //    Threshold = 0.5f,
+    //    //    PrefixPadding = TimeSpan.FromMilliseconds(300),
+    //    //    SilenceDuration = TimeSpan.FromMilliseconds(500)
+    //    //};
+
+    //    //// Create conversation session options for agent - no Model or Instructions specified
+    //    //// Agent parameters are passed via URI query parameters during WebSocket connection:
+    //    //// - agent-id: Agent identifier
+    //    //// - agent-project-name: Project containing the agent
+    //    //// - agent-access-token: Generated access token for agent authentication
+    //    //var sessionOptions = new VoiceLiveSessionOptions
+    //    //{
+    //    //    InputAudioEchoCancellation = new AudioEchoCancellation(),
+    //    //    Voice = azureVoice,
+    //    //    InputAudioFormat = InputAudioFormat.Pcm16,
+    //    //    OutputAudioFormat = OutputAudioFormat.Pcm16,
+    //    //    TurnDetection = turnDetectionConfig
+    //    //};
+
+    //    //// Ensure modalities include audio
+    //    //sessionOptions.Modalities.Clear();
+    //    //sessionOptions.Modalities.Add(InteractionModality.Text);
+    //    //sessionOptions.Modalities.Add(InteractionModality.Audio);
+
+    //    await _session!.ConfigureSessionAsync(sessionOptions, cancellationToken).ConfigureAwait(false);
+
+    //    _logger.LogInformation("Session options created for agent connection");
+    //    // return Task.FromResult(sessionOptions);
+    //}
 }

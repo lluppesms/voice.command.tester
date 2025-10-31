@@ -1,4 +1,4 @@
-namespace Azure.AI.VoiceLive.Samples;
+namespace Azure.AI.VoiceLive.Samples.Helpers;
 
 public class Utilities
 {
