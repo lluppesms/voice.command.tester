@@ -1,0 +1,23 @@
+[
+	{
+		"Name": "Very Basic Conversation (LLM)",
+		"PromptFileName": "instructions-basic.txt",
+		"ModelName": "gpt-realtime"
+	},
+	{
+		"Name": "VeryZara - a friendly chat experience (LLM)",
+		"PromptFileName": "instructions-zara.txt",
+		"ModelName": "gpt-realtime"
+	},
+	{
+		"Name": "Santa's Hotline (LLM)",
+		"PromptFileName": "instructions-santa.txt",
+		"ModelName": "gpt-realtime",
+		"VoiceName": "en-US-BreeNeural"
+	},
+	{
+		"Name": "Truck Service Agent",
+		"AgentName": "asst_GrlTslomjIYjm9mIki9f08XX",
+		"ProjectName": "lll-oai-service-project"
+	}
+]

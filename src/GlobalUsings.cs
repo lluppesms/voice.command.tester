@@ -9,3 +9,4 @@ global using Microsoft.Extensions.Configuration;
 global using System.Reflection;
 global using Spectre.Console;
 global using System.Text;
+global using System.Text.Json;

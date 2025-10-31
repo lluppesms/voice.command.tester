@@ -41,12 +41,12 @@ public class VoiceAssistant : IDisposable
     /// <param name="voice">The voice to use.</param>
     /// <param name="instructions">The system instructions.</param>
     /// <param name="loggerFactory">Logger factory for creating loggers.</param>
-    public VoiceAssistant(VoiceLiveClient client, string model, string voice, string instructions, ILoggerFactory loggerFactory)
+    public VoiceAssistant(VoiceLiveClient client, string model, string voice, string? instructions, ILoggerFactory loggerFactory)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _model = model ?? throw new ArgumentNullException(nameof(model));
         _voice = voice ?? throw new ArgumentNullException(nameof(voice));
-        _instructions = instructions ?? throw new ArgumentNullException(nameof(instructions));
+        _instructions = instructions;
         _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
         _logger = loggerFactory.CreateLogger<VoiceAssistant>();
     }

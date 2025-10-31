@@ -2,71 +2,78 @@
 
 public static class PromptManager
 {
-    public static IReadOnlyList<PromptFileDefinition> PromptFiles = [
-            new ("Very Basic LLM Agent", "instructions-basic.txt"),
-            new ("Zara - a friendly agent to chat with", "instructions-zara.txt"),
-            new ("Santa's Hotline", "instructions-santa.txt")
-        ];
-    //private static readonly List<PromptFileDefinition> _promptFiles = [
-    //        new("Very Basic LLM Agent", "instructions-basic.txt"),
-    //        new("Zara - a friendly agent to chat with", "instructions-zara.txt"),
-    //        new("Santa's Hotline", "instructions-santa.txt"),
-    //    ];
+    public static IReadOnlyList<ScenarioDefinition> ScenarioList { get; private set; } = new List<ScenarioDefinition>();
 
-    //static PromptManager()
-    //{
-    //    InitializePromptFileList();
-    //}
-
-    // public static IReadOnlyList<PromptFileDefinition> PromptFiles => _promptFiles;
-
-    //public static void InitializePromptFileList()
-    //{
-    //    _promptFiles.Clear();
-    //    _promptFiles.AddRange(
-    //    [
-    //        new("Very Basic LLM Agent", "instructions-basic.txt"),
-    //        new("Zara - a friendly agent to chat with", "instructions-zara.txt"),
-    //        new("Santa's Hotline", "instructions-santa.txt"),
-    //    ]);
-    //}
-
-    public static (string, string) SelectAnAgent()
+    static PromptManager()
     {
-        var promptNames = from prompt in PromptFiles select prompt.Name;
-        var selectedAgent = AnsiConsole.Prompt(
+        InitializeScenarioFileList();
+    }
+
+    public static void InitializeScenarioFileList()
+    {
+        var scenarioData = Utilities.ReadResourceFile("Scenarios.json");
+        ScenarioList = !string.IsNullOrEmpty(scenarioData) ? JsonSerializer.Deserialize<List<ScenarioDefinition>>(scenarioData) : new List<ScenarioDefinition>();
+    }
+
+    public static string SelectAScenario()
+    {
+        var promptNames = from scenario in ScenarioList select scenario.Name;
+        var selectedScenarioName = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("[yellow]What agent would you like to talk to?[/]")
                 .PageSize(10)
                 .MoreChoicesText("[grey](Move up and down to select an agent)[/]")
                 .AddChoices(promptNames));
-        var instructionsFile = GetInstructionFileName(selectedAgent);
-        return (selectedAgent, instructionsFile);
+        return (selectedScenarioName); // , instructionsFile);
     }
 
-    public static string GetInstructionFileName(string promptName)
+    public static string GetPromptFileName(string scenarioName)
     {
-        return PromptFiles.FirstOrDefault(p => p.Name == promptName)?.InstructionFileName ?? "instructions.txt";
+        return ScenarioList.FirstOrDefault(p => p.Name == scenarioName)?.PromptFileName ?? "instructions.txt";
+    }
+    public static ScenarioDefinition GetScenario(string scenarioName)
+    {
+        return ScenarioList.FirstOrDefault(p => p.Name == scenarioName)?? new ScenarioDefinition();
     }
 }
 
-public class PromptFileDefinition
+public class ScenarioDefinition
 {
+    /// <summary>
+    /// Name of the scenario that the user picks from a list
+    /// </summary>
     public string Name { get; set; }
-    public string InstructionFileName { get; set; }
-    public PromptFileDefinition()
+
+    /// <summary>
+    /// If you want to talk directly to an LLM, provide a model name and a prompt file
+    /// </summary>
+    public string ModelName { get; set; }
+    /// <summary>
+    /// If you want to talk directly to an LLM, provide a model name and a prompt file
+    /// </summary>
+    public string PromptFileName { get; set; }
+
+    /// <summary>
+    /// If you want to talk to an agent, provide an agent name and a AI Foundry project name
+    /// </summary>
+    public string AgentName { get; set; }
+    /// <summary>
+    /// If you want to talk to an agent, provide an agent name and a AI Foundry project name
+    /// </summary>
+    public string ProjectName { get; set; }
+
+    /// <summary>
+    /// With either method, you can optionally specify a voice name.  If not specified, the default voice from the app settings will be used.
+    /// </summary>
+    public string VoiceName { get; set; }
+
+    public ScenarioDefinition()
     {
         Name = string.Empty;
-        InstructionFileName = string.Empty;
-    }
-    public PromptFileDefinition(string instructionFileName)
-    {
-        Name = instructionFileName;
-        InstructionFileName = instructionFileName;
-    }
-    public PromptFileDefinition(string name, string instructionFileName)
-    {
-        Name = name;
-        InstructionFileName = instructionFileName;
+        PromptFileName = string.Empty;
+        ModelName = string.Empty;
+        AgentName = string.Empty;
+        ProjectName = string.Empty;
+        VoiceName = string.Empty;
     }
 }

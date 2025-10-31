@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scenarios.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.17.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.10" />
     <PackageReference Include="NAudio" Version="2.2.1" />
@@ -37,6 +41,7 @@
     <EmbeddedResource Include="Prompts\instructions-zara.txt" />
     <EmbeddedResource Include="Prompts\instructions-basic.txt" />
     <EmbeddedResource Include="Prompts\instructions.txt" />
+    <EmbeddedResource Include="Scenarios.json" />
   </ItemGroup>
 
   <Target Name="OverwriteWithDevelopmentSettings" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
