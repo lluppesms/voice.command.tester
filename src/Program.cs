@@ -18,10 +18,6 @@
 /////     - System.CommandLine
 ///// </remarks>
 
-using Azure.AI.VoiceLive.Samples.Helpers;
-using Azure.AI.VoiceLive.Samples.Prompts;
-using Spectre.Console;
-
 public class Program
 {
     public static async Task Main(string[] args)

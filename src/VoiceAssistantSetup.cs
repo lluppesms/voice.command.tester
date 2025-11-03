@@ -1,6 +1,3 @@
-using Azure.AI.VoiceLive.Samples.Helpers;
-using Azure.AI.VoiceLive.Samples.Prompts;
-
 namespace Azure.AI.VoiceLive.Samples;
 
 public static class VoiceAssistantSetup

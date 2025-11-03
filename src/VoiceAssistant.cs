@@ -1,4 +1,3 @@
-
 namespace Azure.AI.VoiceLive.Samples;
 
 /// <summary>
@@ -20,6 +19,7 @@ namespace Azure.AI.VoiceLive.Samples;
 /// </remarks>
 public class VoiceAssistant : IDisposable
 {
+    #region Variables
     private readonly VoiceLiveClient _client;
     private readonly string? _model;
     private readonly string? _voice;
@@ -35,6 +35,7 @@ public class VoiceAssistant : IDisposable
     private VoiceLiveSession? _session;
     private AudioProcessor? _audioProcessor;
     private bool _disposed;
+    #endregion
 
     /// <summary>
     /// Initializes a new instance of the VoiceAssistant class.
@@ -88,11 +89,7 @@ public class VoiceAssistant : IDisposable
             await _audioProcessor.StartCaptureAsync().ConfigureAwait(false);
 
             _logger.LogInformation("Voice assistant ready! Start speaking...");
-
-            AnsiConsole.MarkupLine($"[cyan]{new string('=', 60)}[/]");
-            AnsiConsole.MarkupLine(Emoji.Known.Microphone + "  [cyan]VOICE ASSISTANT READY[/]");
-            AnsiConsole.MarkupLine("[cyan]Start speaking to begin conversation...  Press Ctrl+C to exit...[/]");
-            AnsiConsole.MarkupLine($"[cyan]{new string('=', 60)}[/]");
+            Utilities.DisplayHeader("VOICE ASSISTANT READY", "Start speaking to begin conversation...  Press Ctrl+C to exit...");
 
             // Process events
             await ProcessEventsAsync(cancellationToken).ConfigureAwait(false);

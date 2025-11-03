@@ -1,6 +1,4 @@
-﻿using Azure.AI.VoiceLive.Samples.Helpers;
-
-namespace Azure.AI.VoiceLive.Samples.Prompts;
+﻿namespace Azure.AI.VoiceLive.Samples.Prompts;
 
 public static class PromptManager
 {
@@ -14,7 +12,7 @@ public static class PromptManager
     public static void InitializeScenarioFileList()
     {
         var scenarioData = Utilities.ReadResourceFile("Scenarios.json");
-        ScenarioList = !string.IsNullOrEmpty(scenarioData) ? JsonSerializer.Deserialize<List<ScenarioDefinition>>(scenarioData) : new List<ScenarioDefinition>();
+        ScenarioList = !string.IsNullOrEmpty(scenarioData) ? JsonSerializer.Deserialize<List<ScenarioDefinition>>(scenarioData) : [];
     }
 
     public static string SelectAScenario()
@@ -22,11 +20,11 @@ public static class PromptManager
         var promptNames = from scenario in ScenarioList select scenario.Name;
         var selectedScenarioName = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("[yellow]What agent would you like to talk to?[/]")
+                .Title("[yellow]What scenario would you like to start?[/]")
                 .PageSize(10)
-                .MoreChoicesText("[grey](Move up and down to select an agent)[/]")
+                .MoreChoicesText("[grey](Move up and down to select a scenario)[/]")
                 .AddChoices(promptNames));
-        return selectedScenarioName; // , instructionsFile);
+        return selectedScenarioName;
     }
 
     public static string GetPromptFileName(string scenarioName)
