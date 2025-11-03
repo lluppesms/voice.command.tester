@@ -87,6 +87,13 @@ public class Utilities
         var _logger = _loggerFactory.CreateLogger<Program>();
         return (_loggerFactory, _logger);
     }
+    public static void DisplayHeader(string title, string subtitle, string color = "cyan")
+    {
+        AnsiConsole.MarkupLine($"[{color}]{new string('=', 60)}[/]");
+        AnsiConsole.MarkupLine(Emoji.Known.Microphone + $"  [{color}]{title}[/]");
+        AnsiConsole.MarkupLine($"[{color}]{subtitle}[/]");
+        AnsiConsole.MarkupLine($"[{color}]{new string('=', 60)}[/]");
+    }
     #endregion
 
     #region Credentials

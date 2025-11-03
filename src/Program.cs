@@ -18,10 +18,6 @@
 /////     - System.CommandLine
 ///// </remarks>
 
-using Azure.AI.VoiceLive.Samples.Helpers;
-using Azure.AI.VoiceLive.Samples.Prompts;
-using Spectre.Console;
-
 public class Program
 {
     public static async Task Main(string[] args)
@@ -29,16 +25,6 @@ public class Program
         Utilities.WelcomeMessage("Voice Live Command Line", "Welcome to the VoiceLive API Demo");
 
         var scenarioName = PromptManager.SelectAScenario();
-
-
-
-        // NOTE: this code is working fine for the LLM Scenarios...  but the AGENT scenarios are failing with
-        //   Error! System.Net.WebSockets.WebSocketException: Unable to connect to the remote server
-        //   System.Net.Http.HttpRequestException: An error occurred while sending the request.
-        //   System.IO.IOException: Unable to read data from the transport connection:
-        //   An existing connection was forcibly closed by the remote host;
-
-
 
         await VoiceAssistantSetup.StartVoiceAssistant(scenarioName);
 

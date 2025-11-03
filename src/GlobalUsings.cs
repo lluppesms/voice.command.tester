@@ -1,5 +1,6 @@
 global using Azure.AI.VoiceLive.Samples;
 global using Azure.AI.VoiceLive.Samples.Helpers;
+global using Azure.AI.VoiceLive.Samples.Prompts;
 global using Azure.Core;
 global using Azure.Identity;
 global using Microsoft.Extensions.Configuration;
