@@ -31,13 +31,11 @@ public class Program
         var scenarioName = PromptManager.SelectAScenario();
 
 
-
         // NOTE: this code is working fine for the LLM Scenarios...  but the AGENT scenarios are failing with
         //   Error! System.Net.WebSockets.WebSocketException: Unable to connect to the remote server
         //   System.Net.Http.HttpRequestException: An error occurred while sending the request.
         //   System.IO.IOException: Unable to read data from the transport connection:
         //   An existing connection was forcibly closed by the remote host;
-
 
 
         await VoiceAssistantSetup.StartVoiceAssistant(scenarioName);

@@ -47,12 +47,18 @@ public static class VoiceAssistantSetup
                     // Append agent parameters to the endpoint URL
                     var uriBuilder = new UriBuilder(endpoint);
                     var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                    // not sure what's correct here... adding multiple variants of the parameters to be safe  --- documentation varies...!
+                    query["agent_id"] = scenario.AgentName;
+                    query["project_id"] = scenario.ProjectName;
+                    query["project_name"] = scenario.ProjectName;
+                    query["agent_access_token"] = agentAccessToken;
                     query["agent-id"] = scenario.AgentName;
                     query["agent-project-name"] = scenario.ProjectName;
                     query["agent-access-token"] = agentAccessToken;
                     uriBuilder.Query = query.ToString();
                     endpoint = uriBuilder.ToString();
                     logger.LogInformation("Agent parameters added as query parameters: agent-id={AgentId}, agent-project-name={ProjectName}", scenario.AgentName, scenario.ProjectName);
+                    logger.LogInformation($"Endpoint: {endpoint}");
                 }
                 catch (Exception ex)
                 {
