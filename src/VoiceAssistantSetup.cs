@@ -7,9 +7,6 @@ public static class VoiceAssistantSetup
         ILoggerFactory loggerFactory;
         ILogger<Program> logger = null;
         string instructions = string.Empty;
-        //string modelName = string.Empty;
-        //string agentName = string.Empty;
-        //string agentProject = string.Empty;
         string agentAccessToken = string.Empty;
 
         try
