@@ -7,10 +7,6 @@ public static class VoiceAssistantSetup
         ILoggerFactory loggerFactory;
         ILogger<Program> logger = null;
         string instructions = string.Empty;
-        //string modelName = string.Empty;
-        //string agentName = string.Empty;
-        //string agentProject = string.Empty;
-        string agentAccessToken = string.Empty;
 
         try
         {
@@ -82,7 +78,7 @@ public static class VoiceAssistantSetup
             }
 
             // Create voice assistant
-            using var assistant = new VoiceAssistant(client, scenario.ModelName, instructions, scenario.AgentName, scenario.ProjectName, agentAccessToken, voice, loggerFactory);
+            using var assistant = new VoiceAssistant(client, scenario.ModelName, instructions, voice, loggerFactory);
 
             // Setup cancellation token for graceful shutdown
             using var cancellationTokenSource = new CancellationTokenSource();
