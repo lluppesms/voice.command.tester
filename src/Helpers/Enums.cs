@@ -2,5 +2,6 @@
 
 public enum ScenarioType
 {
+    Agent,
     LLM
 }

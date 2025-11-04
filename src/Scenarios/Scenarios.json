@@ -14,5 +14,10 @@
 		"PromptFileName": "instructions-santa.txt",
 		"ModelName": "gpt-realtime",
 		"VoiceName": "en-US-AvaNeural"
+	},
+	{
+		"Name": "F-250 Truck Service Hotline (Agent)",
+		"Id": "asst_EdBGNOG7jtPAny8yMV3MdNId",
+		"ProjectName": "aiservices-ll-call-cent-project"
 	}
 ]

@@ -54,6 +54,15 @@ public class ScenarioDefinition
     public string PromptFileName { get; set; }
 
     /// <summary>
+    /// If you want to talk to an agent, provide an agent name and a AI Foundry project name
+    /// </summary>
+    public string AgentName { get; set; }
+    /// <summary>
+    /// If you want to talk to an agent, provide an agent name and a AI Foundry project name
+    /// </summary>
+    public string ProjectName { get; set; }
+
+    /// <summary>
     /// With either method, you can optionally specify a voice name.  If not specified, the default voice from the app settings will be used.
     /// </summary>
     public string VoiceName { get; set; }
@@ -63,6 +72,8 @@ public class ScenarioDefinition
         Name = string.Empty;
         PromptFileName = string.Empty;
         ModelName = string.Empty;
+        AgentName = string.Empty;
+        ProjectName = string.Empty;
         VoiceName = string.Empty;
     }
 }
