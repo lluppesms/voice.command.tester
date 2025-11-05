@@ -18,7 +18,7 @@ public static class VoiceAssistantSetup
             (var apiKey, var endpoint, var model, var voice, var tenantId, var useTokenCredential, var verbose) = Utilities.ReadConfig();
 
             // get scenario details
-            var scenario = PromptManager.GetScenario(scenarioName);
+            var scenario = ScenarioManager.GetScenario(scenarioName);
 
             // if the Scenario specifies different voice, then use that
             voice = !string.IsNullOrEmpty(scenario.VoiceName) ? scenario.VoiceName : voice;

@@ -24,7 +24,7 @@ public class Program
     {
         Utilities.WelcomeMessage("Voice Live Command Line", "Welcome to the VoiceLive API Demo");
 
-        var scenarioName = PromptManager.SelectAScenario();
+        var scenarioName = ScenarioManager.SelectAScenario();
 
         await VoiceAssistantSetup.StartVoiceAssistant(scenarioName);
 

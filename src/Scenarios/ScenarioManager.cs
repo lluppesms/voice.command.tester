@@ -1,10 +1,10 @@
 ﻿namespace Azure.AI.VoiceLive.Samples.Prompts;
 
-public static class PromptManager
+public static class ScenarioManager
 {
     public static IReadOnlyList<ScenarioDefinition> ScenarioList { get; private set; } = new List<ScenarioDefinition>();
 
-    static PromptManager()
+    static ScenarioManager()
     {
         InitializeScenarioFileList();
     }
