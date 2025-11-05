@@ -11,10 +11,10 @@ public class Utilities
             .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
             .Build();
 
-        string apiKey = configuration["VoiceLive:ApiKey"];
-        string endpoint = configuration["VoiceLive:Endpoint"];
-        string model = configuration["VoiceLive:Model"];
-        string voice = configuration["VoiceLive:Voice"];
+        string? apiKey = configuration["VoiceLive:ApiKey"];
+        string? endpoint = configuration["VoiceLive:Endpoint"];
+        string? model = configuration["VoiceLive:Model"];
+        string? voice = configuration["VoiceLive:Voice"];
         string? tenantId = configuration["VisualStudioTenantId"];
 
         var useTokenCredential = string.IsNullOrEmpty(apiKey);
@@ -31,6 +31,7 @@ public class Utilities
 
         return (apiKey, endpoint, model, voice, tenantId, useTokenCredential, verbose);
     }
+
     public static string ReadResourceFile(string fileName)
     {
         var fileContents = string.Empty;
@@ -46,21 +47,21 @@ public class Utilities
                 {
                     using var reader = new StreamReader(stream);
                     fileContents = reader.ReadToEnd();
-                    Console.WriteLine($"Loaded {fileContents.Length} bytes from embedded resource {fileName}");
+                    Console.WriteLine($"Loaded {fileContents.Length} bytes from embedded resource {fileName}\n");
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource file {fileName} not found![/]");
+                    AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource file {fileName} not found![/]\n");
                 }
             }
             else
             {
-                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource {fileName} not found![/]");
+                AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Resource {fileName} not found![/]\n");
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Failed to load contents from resource:[/]");
+            AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Failed to load contents from resource:[/]\n");
             AnsiConsole.WriteException(ex);
             fileContents = string.Empty;
         }
@@ -81,7 +82,7 @@ public class Utilities
         // Setup logging
         var _loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddConsole();
+            //builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Debug);
         });
         var _logger = _loggerFactory.CreateLogger<Program>();
@@ -99,7 +100,9 @@ public class Utilities
     #region Credentials
     public static DefaultAzureCredential GetCredentials(IConfiguration configuration)
     {
+#pragma warning disable CS8604 // Possible null reference argument.
         return GetCredentials(configuration["VisualStudioTenantId"], configuration["UserAssignedManagedIdentityClientId"]);
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     public static DefaultAzureCredential GetCredentials()

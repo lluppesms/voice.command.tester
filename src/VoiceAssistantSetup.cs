@@ -4,9 +4,13 @@ public static class VoiceAssistantSetup
 {
     public static async Task StartVoiceAssistant(string scenarioName)
     {
+        #region Variables
         ILoggerFactory loggerFactory;
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         ILogger<Program> logger = null;
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         string instructions = string.Empty;
+        #endregion
 
         try
         {
@@ -61,7 +65,9 @@ public static class VoiceAssistantSetup
         }
         catch (Exception ex)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             logger.LogError(ex, "Fatal error");
+#pragma warning restore CS8604 // Possible null reference argument.
             AnsiConsole.MarkupLine(Emoji.Known.Biohazard + $"  [red]Error![/]");
             AnsiConsole.WriteException(ex);
             AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");

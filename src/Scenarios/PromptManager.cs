@@ -24,6 +24,7 @@ public static class PromptManager
                 .PageSize(10)
                 .MoreChoicesText("[grey](Move up and down to select a scenario)[/]")
                 .AddChoices(promptNames));
+        AnsiConsole.MarkupLine($"\n[yellow]User selected scenario: {selectedScenarioName}[/]");
         return selectedScenarioName;
     }
 

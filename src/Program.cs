@@ -28,7 +28,7 @@ public class Program
 
         await VoiceAssistantSetup.StartVoiceAssistant(scenarioName);
 
-        AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
-        Console.ReadKey();
+        //AnsiConsole.MarkupLine("\n[cyan]Press any key to exit...[/]");
+        //Console.ReadKey();
     }
 }
